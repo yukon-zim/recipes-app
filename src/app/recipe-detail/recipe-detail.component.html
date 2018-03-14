@@ -1,0 +1,80 @@
+<div *ngIf="recipe">
+
+  <h2>{{ recipe.name | uppercase }}</h2>
+
+  <h4> The Deets</h4>
+  <div><span>ID: </span>{{recipe.id}}</div>
+  <div>
+    <label>Name:</label>
+    <span (click)="editField('name')" *ngIf="!isFieldInEditMode('name')">{{recipe.name}}</span>
+    <input [(ngModel)]="recipe.name" placeholder="name"
+           *ngIf="isFieldInEditMode('name')"
+           (keyup.enter)="unfocusField('name')"
+           (focusout)="unfocusField('name')"
+    />
+  </div>
+  <div>
+    <label>Category:</label>
+    <span (click)="editField('category')" *ngIf="!isFieldInEditMode('category')">{{recipe.category}}</span>
+    <input [(ngModel)]="recipe.category" placeholder="category"
+           *ngIf="isFieldInEditMode('category')"
+           (keyup.enter)="unfocusField('category')"
+           (focusout)="unfocusField('category')"/>
+  </div>
+  <div class="list-group">
+    <label>Ingredients:</label>
+      <ul>
+        <li *ngFor="let ingredient of recipe.ingredients;let index = index; trackBy:trackByIndex">
+          <span (click)="editField('ingredients', index)" *ngIf="!isFieldInEditMode('ingredients', index)">{{recipe.ingredients[index]}}</span>
+          <input [(ngModel)]="recipe.ingredients[index]"
+                 *ngIf="isFieldInEditMode('ingredients', index)"
+                 (keyup.enter)="unfocusField('ingredients')"
+                 (focusout)="unfocusField('ingredients')"/>
+        </li>
+      </ul>
+  </div>
+  <div>
+    <label>Number of Servings:
+      <span (click)="editField('numberOfServings')" *ngIf="!isFieldInEditMode('numberOfServings')">{{recipe.numberOfServings}}</span>
+      <input [(ngModel)]="recipe.numberOfServings"
+             placeholder="number of servings"
+             *ngIf="isFieldInEditMode('numberOfServings')"
+             (keyup.enter)="unfocusField('numberOfServings')"
+             (focusout)="unfocusField('numberOfServings')"/>
+    </label>
+  </div>
+  <div class="list-group">
+    <label>Instructions: </label>
+      <ol>
+        <li *ngFor="let instruction of recipe.instructions; let index = index; trackBy:trackByIndex">
+          <span (click)="editField('instructions', index)" *ngIf="!isFieldInEditMode('instructions', index)">{{recipe.instructions[index]}}</span>
+          <input [(ngModel)]="recipe.instructions[index]"
+                 *ngIf="isFieldInEditMode('instructions', index)"
+                 (keyup.enter)="unfocusField('instructions')"
+                 (focusout)="unfocusField('instructions')"/>
+        </li>
+      </ol>
+  </div>
+  <div>
+    <label>Date Created:
+      <span>{{recipe.dateCreated | date:"MM/dd/yy" }}</span>
+    </label>
+  </div>
+  <div>
+    <label>Date Modified:
+      <span>{{recipe.dateModified | date:"MM/dd/yy" }}</span>
+    </label>
+  </div>
+  <div>
+    <label>Notes:</label>
+    <span (click)="editField('notes')" *ngIf="!isFieldInEditMode('notes')">{{recipe.notes}}</span>
+    <div>
+    <textarea [(ngModel)]="recipe.notes"
+           placeholder="miscellaneous notes"
+           *ngIf="isFieldInEditMode('notes')"
+           (keyup.enter)="unfocusField('notes')"
+           (focusout)="unfocusField('notes')"></textarea>
+    </div>
+  </div>
+
+</div>
