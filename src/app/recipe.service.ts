@@ -1,17 +1,22 @@
 import { Injectable } from '@angular/core';
 import { Recipe } from './recipe';
 import { RECIPES } from './mock-recipes';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class RecipeService {
-  getRecipes(): Recipe[] {
-    return RECIPES;
+  private recipeUrl = 'http://localhost:1337/recipes';
+
+  async getRecipes(): Promise<Recipe[]> {
+    return await this.http.get<Recipe[]>(this.recipeUrl).toPromise();
   }
 
   async getRecipe(id: number): Promise<Recipe> {
-    return RECIPES.find(recipe => recipe.id === id);
+    return await this.http.get<Recipe>(`${this.recipeUrl}/${id}`).toPromise();
   }
 
-  constructor() { }
+  constructor(
+    private http: HttpClient
+  ) { }
 
 }
