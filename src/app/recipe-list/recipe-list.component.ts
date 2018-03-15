@@ -11,8 +11,8 @@ export class RecipeListComponent implements OnInit {
   recipes: Recipe[];
   selectedRecipe: Recipe;
 
-  getRecipes(): void {
-    this.recipes = this.recipeService.getRecipes();
+  async getRecipes(): void {
+    this.recipes = await this.recipeService.getRecipes();
   }
 
   onSelect(recipe: Recipe): void {
