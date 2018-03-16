@@ -38,6 +38,11 @@ export class RecipeDetailComponent implements OnInit {
     this.recipe = await this.recipeService.getRecipe(urlId);
   }
 
+  async updateRecipe(): void {
+    const urlId = +this.route.snapshot.paramMap.get('id');
+    this.recipe = await this.recipeService.updateRecipe(urlId, this.recipe);
+  }
+
   constructor(
     private route: ActivatedRoute,
     private recipeService: RecipeService,
