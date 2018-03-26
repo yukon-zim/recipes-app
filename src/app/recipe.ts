@@ -8,4 +8,8 @@ export class Recipe {
   dateCreated: Date;
   dateModified: Date;
   notes: string;
+  constructor() {
+    this.ingredients = [];
+    this.instructions = [];
+  }
 }

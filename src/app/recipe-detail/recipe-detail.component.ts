@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import {Component, OnInit, Input, ViewChild, AfterViewInit} from '@angular/core';
 import { Recipe } from '../recipe';
 import { RecipeService } from '../recipe.service';
 
@@ -12,7 +12,8 @@ import { Location } from '@angular/common';
 })
 export class RecipeDetailComponent implements OnInit {
   @Input() recipe: Recipe;
-  fieldInEditMode: string;
+  fieldInEditMode: object;
+  newRecipeMode: boolean;
 
   trackByIndex(index: number, item: string) {
     return index;
@@ -22,25 +23,59 @@ export class RecipeDetailComponent implements OnInit {
     this.fieldInEditMode = {fieldName, fieldIndex: index};
   }
 
-  isFieldInEditMode(fieldName, index) {
+  /**
+   * checks if specific field has focus in UI; always true if adding new recipe
+   * @param fieldName: string
+   * @param index: number (used for array fields)
+   * @returns {boolean}
+   */
+  isFieldInEditMode(fieldName: string, index: number) {
+    if (this.newRecipeMode) {
+      return true;
+    }
     return this.fieldInEditMode.fieldName === fieldName && this.fieldInEditMode.fieldIndex === index;
   }
 
-  unfocusField(fieldName) {
+  unfocusField() {
     this.fieldInEditMode = {fieldName: null, fieldIndex: null};
   }
 
+  addIngredient() {
+    this.recipe.ingredients.push('');
+    this.editField('ingredients', this.recipe.ingredients.length - 1);
+  }
 
+  addInstruction() {
+    this.recipe.instructions.push('');
+    this.editField('instructions', this.recipe.instructions.length - 1);
+  }
 
+  deleteIngredient(index) {
+    this.recipe.ingredients.splice(index, 1);
+  }
+
+  deleteInstruction(index) {
+    this.recipe.instructions.splice(index, 1);
+  }
 
   async getRecipe(): void {
     const urlId = +this.route.snapshot.paramMap.get('id');
-    this.recipe = await this.recipeService.getRecipe(urlId);
+    if (urlId) {
+      this.recipe = await this.recipeService.getRecipe(urlId);
+      this.newRecipeMode = false;
+    } else {
+      this.recipe = new Recipe();
+      this.newRecipeMode = true;
+    }
   }
 
   async updateRecipe(): void {
     const urlId = +this.route.snapshot.paramMap.get('id');
     this.recipe = await this.recipeService.updateRecipe(urlId, this.recipe);
+  }
+
+  async saveNewRecipe(): void {
+    this.recipe = await this.recipeService.saveNewRecipe();
   }
 
   constructor(

@@ -8,21 +8,37 @@
     <div>
       <label>Name:</label>
       <span (click)="editField('name')" *ngIf="!isFieldInEditMode('name')">{{recipe.name}}</span>
-      <input [(ngModel)]="recipe.name" placeholder="name"
-             *ngIf="isFieldInEditMode('name')"
+      <input id = "name"
+             [(ngModel)]="recipe.name" type = "text"
+             #name="ngModel"
+             placeholder="name"
+             [hidden]="!isFieldInEditMode('name')"
              (keyup.enter)="unfocusField('name')"
              (focusout)="unfocusField('name')"
              name="name"
+             required
       />
+      <div *ngIf="isFieldInEditMode('name')">
+        <div *ngIf="(name.invalid && (name.dirty || name.touched))"
+             class="alert alert-danger">
+
+          <div *ngIf="name.errors.required">
+            Name is required.
+          </div>
+        </div>
+      </div>
     </div>
     <div>
       <label>Category:</label>
       <span (click)="editField('category')" *ngIf="!isFieldInEditMode('category')">{{recipe.category}}</span>
-      <input [(ngModel)]="recipe.category" placeholder="category"
-             *ngIf="isFieldInEditMode('category')"
+      <input id="category"
+             [(ngModel)]="recipe.category" type = "text"
+             placeholder="category"
              (keyup.enter)="unfocusField('category')"
              (focusout)="unfocusField('category')"
+             [hidden]="!isFieldInEditMode('category')"
              name="category"
+
       />
     </div>
     <div class="list-group">
@@ -30,19 +46,24 @@
       <ul>
         <li *ngFor="let ingredient of recipe.ingredients;let index = index; trackBy:trackByIndex">
           <span (click)="editField('ingredients', index)" *ngIf="!isFieldInEditMode('ingredients', index)">{{recipe.ingredients[index]}}</span>
-          <input [(ngModel)]="recipe.ingredients[index]"
+          <input id="ingredients{{index}}"
+            [(ngModel)]="recipe.ingredients[index]"
                  *ngIf="isFieldInEditMode('ingredients', index)"
                  (keyup.enter)="unfocusField('ingredients')"
                  (focusout)="unfocusField('ingredients')"
-                 name="ingredients"
+                 name="ingredients{{index}}"
+                 required
           />
+          <button (click)="deleteIngredient(index)">Delete ingredient</button>
         </li>
+        <button (click)="addIngredient()">Add ingredient</button>
       </ul>
     </div>
     <div>
       <label>Number of Servings:
         <span (click)="editField('numberOfServings')" *ngIf="!isFieldInEditMode('numberOfServings')">{{recipe.numberOfServings}}</span>
-        <input [(ngModel)]="recipe.numberOfServings"
+        <input id="numberOfServings"
+          [(ngModel)]="recipe.numberOfServings"
                placeholder="number of servings"
                *ngIf="isFieldInEditMode('numberOfServings')"
                (keyup.enter)="unfocusField('numberOfServings')"
@@ -56,13 +77,17 @@
       <ol>
         <li *ngFor="let instruction of recipe.instructions; let index = index; trackBy:trackByIndex">
           <span (click)="editField('instructions', index)" *ngIf="!isFieldInEditMode('instructions', index)">{{recipe.instructions[index]}}</span>
-          <input [(ngModel)]="recipe.instructions[index]"
+          <input id="instructions{{index}}"
+            [(ngModel)]="recipe.instructions[index]"
                  *ngIf="isFieldInEditMode('instructions', index)"
                  (keyup.enter)="unfocusField('instructions')"
                  (focusout)="unfocusField('instructions')"
-                 name="instructions"
+                 name="instructions{{index}}"
+                 required
           />
+          <button (click)="deleteInstruction(index)">Delete step</button>
         </li>
+        <button (click)="addInstruction()">Add step</button>
       </ol>
     </div>
     <div>
@@ -88,8 +113,11 @@
     ></textarea>
       </div>
     </div>
-    <div *ngIf="recipeForm.dirty">
+    <div *ngIf="recipeForm.dirty && !newRecipeMode">
       <button (click)="updateRecipe()">Update Recipe</button>
+    </div>
+    <div *ngIf="newRecipeMode">
+      <button (click)="saveNewRecipe()">Save new recipe</button>
     </div>
   </form>
 

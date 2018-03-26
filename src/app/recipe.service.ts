@@ -19,6 +19,10 @@ export class RecipeService {
     return await this.http.put<Recipe>(`${this.recipeUrl}/${id}`, recipe).toPromise();
   }
 
+  async saveNewRecipe(recipe: Recipe): Promise<Recipe> {
+    return await this.http.post<Recipe>(this.recipeUrl, recipe).toPromise();
+  }
+
   constructor(
     private http: HttpClient
   ) { }

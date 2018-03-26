@@ -8,6 +8,7 @@ const routes: Routes = [
   { path: 'recipes', component: RecipeListComponent },
   { path: '', redirectTo: '/recipes', pathMatch: 'full' },
   { path: 'detail/:id', component: RecipeDetailComponent },
+  { path: 'detail/new', component: RecipeDetailComponent }
 ];
 
 @NgModule({

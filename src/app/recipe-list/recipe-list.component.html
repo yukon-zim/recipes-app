@@ -1,4 +1,5 @@
 <h2>My Recipes</h2>
+<button routerLink="/detail/new">Add new recipe!</button>
 <ul class="recipes">
   <li *ngFor="let recipe of recipes">
     <a routerLink="/detail/{{recipe.id}}">
