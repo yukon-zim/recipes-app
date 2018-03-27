@@ -1,9 +1,11 @@
-import {Component, OnInit, Input, ViewChild, AfterViewInit} from '@angular/core';
+import {Component, OnInit, Input, ViewChild} from '@angular/core';
 import { Recipe } from '../recipe';
 import { RecipeService } from '../recipe.service';
+import { ErrorService } from '../error.service';
 
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { Location } from '@angular/common';
+import {Form} from "@angular/forms";
 
 @Component({
   selector: 'app-recipe-detail',
@@ -12,8 +14,11 @@ import { Location } from '@angular/common';
 })
 export class RecipeDetailComponent implements OnInit {
   @Input() recipe: Recipe;
+  @ViewChild('recipeForm') recipeForm: Form;
   fieldInEditMode: object;
   newRecipeMode: boolean;
+  formError: string;
+
 
   trackByIndex(index: number, item: string) {
     return index;
@@ -31,6 +36,9 @@ export class RecipeDetailComponent implements OnInit {
    */
   isFieldInEditMode(fieldName: string, index: number) {
     if (this.newRecipeMode) {
+      return true;
+    }
+    if (this.recipe[fieldName] === '') {
       return true;
     }
     return this.fieldInEditMode.fieldName === fieldName && this.fieldInEditMode.fieldIndex === index;
@@ -52,13 +60,19 @@ export class RecipeDetailComponent implements OnInit {
 
   deleteIngredient(index) {
     this.recipe.ingredients.splice(index, 1);
+    this.recipeForm.form.markAsDirty();
   }
 
   deleteInstruction(index) {
     this.recipe.instructions.splice(index, 1);
+    this.recipeForm.form.markAsDirty();
   }
 
-  async getRecipe(): void {
+  goToListView() {
+    this.router.navigateByUrl('recipes');
+  }
+
+  async getRecipe(): Promise<void> {
     const urlId = +this.route.snapshot.paramMap.get('id');
     if (urlId) {
       this.recipe = await this.recipeService.getRecipe(urlId);
@@ -69,19 +83,34 @@ export class RecipeDetailComponent implements OnInit {
     }
   }
 
-  async updateRecipe(): void {
+  async updateRecipe(): Promise<void> {
     const urlId = +this.route.snapshot.paramMap.get('id');
-    this.recipe = await this.recipeService.updateRecipe(urlId, this.recipe);
+   try {
+     this.formError = '';
+     this.recipe = await this.recipeService.updateRecipe(urlId, this.recipe);
+     this.recipeForm.reset();
+     this.getRecipe();
+   } catch (err) {
+   this.formError = this.errorService.extractErrorMessage(err);
+   }
   }
 
-  async saveNewRecipe(): void {
-    this.recipe = await this.recipeService.saveNewRecipe();
+  async saveNewRecipe(): Promise<void> {
+    try {
+      this.formError = '';
+      this.recipe = await this.recipeService.saveNewRecipe(this.recipe);
+      this.goToListView();
+    } catch (err) {
+      console.log(err);
+      this.formError = this.errorService.extractErrorMessage(err);
+    }
   }
 
   constructor(
     private route: ActivatedRoute,
     private recipeService: RecipeService,
-    private location: Location
+    private errorService: ErrorService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {

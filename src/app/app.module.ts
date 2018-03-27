@@ -9,6 +9,7 @@ import { RecipeListComponent } from './recipe-list/recipe-list.component';
 import { RecipeDetailComponent } from './recipe-detail/recipe-detail.component';
 import { AppRoutingModule } from './app-routing.module';
 import { RecipeService } from './recipe.service';
+import {ErrorService} from './error.service';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { RecipeService } from './recipe.service';
     HttpClientModule
   ],
   providers: [
-    RecipeService
+    RecipeService,
+    ErrorService
   ],
   bootstrap: [AppComponent]
 })
