@@ -15,6 +15,7 @@
              [hidden]="!isFieldInEditMode('name')"
              (keyup.enter)="unfocusField('name')"
              (focusout)="unfocusField('name')"
+             (focusin)="editField('name')"
              name="name"
              required
       />
@@ -36,6 +37,7 @@
              placeholder="category"
              (keyup.enter)="unfocusField('category')"
              (focusout)="unfocusField('category')"
+             (focusin)="editField('category')"
              [hidden]="!isFieldInEditMode('category')"
              name="category"
 
@@ -68,6 +70,7 @@
                *ngIf="isFieldInEditMode('numberOfServings')"
                (keyup.enter)="unfocusField('numberOfServings')"
                (focusout)="unfocusField('numberOfServings')"
+               (focusin)="editField('numberOfServings')"
                name="numberOfServings"
         />
       </label>
@@ -109,9 +112,15 @@
               *ngIf="isFieldInEditMode('notes')"
               (keyup.enter)="unfocusField('notes')"
               (focusout)="unfocusField('notes')"
+              (focusin)="editField('notes')"
               name="notes"
     ></textarea>
       </div>
+    </div>
+    <div>
+      <span class="error-message">
+        {{formError}}
+      </span>
     </div>
     <div *ngIf="recipeForm.dirty && !newRecipeMode">
       <button (click)="updateRecipe()">Update Recipe</button>
