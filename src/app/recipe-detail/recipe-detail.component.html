@@ -123,10 +123,13 @@
       </span>
     </div>
     <div *ngIf="recipeForm.dirty && !newRecipeMode">
-      <button (click)="updateRecipe()">Update Recipe</button>
+      <button (click)="updateRecipe()">Update recipe</button>
     </div>
     <div *ngIf="newRecipeMode">
       <button (click)="saveNewRecipe()">Save new recipe</button>
+    </div>
+    <div *ngIf="!recipeForm.dirty && !newRecipeMode">
+      <button (click)="deleteRecipe()">Delete recipe</button>
     </div>
   </form>
 
