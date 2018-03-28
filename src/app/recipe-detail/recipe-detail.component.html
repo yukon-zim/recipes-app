@@ -46,7 +46,7 @@
     <div class="list-group">
       <label>Ingredients:</label>
       <ul>
-        <li *ngFor="let ingredient of recipe.ingredients;let index = index; trackBy:trackByIndex">
+        <li *ngFor="let ingredient of recipe.ingredients;let index = index; trackBy:trackByIndex; first as isFirst; last as isLast">
           <span (click)="editField('ingredients', index)" *ngIf="!isFieldInEditMode('ingredients', index)">{{recipe.ingredients[index]}}</span>
           <input id="ingredients{{index}}"
             [(ngModel)]="recipe.ingredients[index]"
@@ -56,6 +56,8 @@
                  name="ingredients{{index}}"
                  required
           />
+          <button *ngIf="!isFirst" (click)="moveIngredientUp(index)">move up</button>
+          <button *ngIf="!isLast" (click)="moveIngredientDown(index)">move down</button>
           <button (click)="deleteIngredient(index)">Delete ingredient</button>
         </li>
         <button (click)="addIngredient()">Add ingredient</button>
@@ -78,7 +80,7 @@
     <div class="list-group">
       <label>Instructions: </label>
       <ol>
-        <li *ngFor="let instruction of recipe.instructions; let index = index; trackBy:trackByIndex">
+        <li *ngFor="let instruction of recipe.instructions; let index = index; trackBy:trackByIndex; first as isFirst; last as isLast">
           <span (click)="editField('instructions', index)" *ngIf="!isFieldInEditMode('instructions', index)">{{recipe.instructions[index]}}</span>
           <input id="instructions{{index}}"
             [(ngModel)]="recipe.instructions[index]"
@@ -88,6 +90,8 @@
                  name="instructions{{index}}"
                  required
           />
+          <button *ngIf="!isFirst" (click)="moveInstructionUp(index)">move up</button>
+          <button *ngIf="!isLast" (click)="moveInstructionDown(index)">move down</button>
           <button (click)="deleteInstruction(index)">Delete step</button>
         </li>
         <button (click)="addInstruction()">Add step</button>

@@ -58,6 +58,30 @@ export class RecipeDetailComponent implements OnInit {
     this.editField('instructions', this.recipe.instructions.length - 1);
   }
 
+  moveIngredientUp(ingredientIndex) {
+    const ingredientToMove = this.recipe.ingredients.splice(ingredientIndex, 1);
+    this.recipe.ingredients.splice(ingredientIndex - 1, 0, ingredientToMove);
+    this.recipeForm.form.markAsDirty();
+  }
+
+  moveIngredientDown(ingredientIndex) {
+    const ingredientToMove = this.recipe.ingredients.splice(ingredientIndex, 1);
+    this.recipe.ingredients.splice(ingredientIndex + 1, 0, ingredientToMove);
+    this.recipeForm.form.markAsDirty();
+  }
+
+  moveInstructionUp(instructionIndex) {
+    const instructionToMove = this.recipe.instructions.splice(instructionIndex, 1);
+    this.recipe.instructions.splice(instructionIndex - 1, 0, instructionToMove);
+    this.recipeForm.form.markAsDirty();
+  }
+
+  moveInstructionDown(instructionIndex) {
+    const instructionToMove = this.recipe.instructions.splice(instructionIndex, 1);
+    this.recipe.instructions.splice(instructionIndex + 1, 0, instructionToMove);
+    this.recipeForm.form.markAsDirty();
+  }
+
   deleteIngredient(index) {
     this.recipe.ingredients.splice(index, 1);
     this.recipeForm.form.markAsDirty();
