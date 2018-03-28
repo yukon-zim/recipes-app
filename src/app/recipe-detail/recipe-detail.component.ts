@@ -75,7 +75,11 @@ export class RecipeDetailComponent implements OnInit {
   async getRecipe(): Promise<void> {
     const urlId = +this.route.snapshot.paramMap.get('id');
     if (urlId) {
-      this.recipe = await this.recipeService.getRecipe(urlId);
+      try {
+        this.recipe = await this.recipeService.getRecipe(urlId);
+      } catch (err) {
+        this.formError = this.errorService.extractErrorMessage(err, `loading recipe ID ${urlId}`);
+      }
       this.newRecipeMode = false;
     } else {
       this.recipe = new Recipe();
@@ -85,14 +89,14 @@ export class RecipeDetailComponent implements OnInit {
 
   async updateRecipe(): Promise<void> {
     const urlId = +this.route.snapshot.paramMap.get('id');
-   try {
-     this.formError = '';
-     this.recipe = await this.recipeService.updateRecipe(urlId, this.recipe);
-     this.recipeForm.reset();
-     this.getRecipe();
-   } catch (err) {
-   this.formError = this.errorService.extractErrorMessage(err);
-   }
+    try {
+      this.formError = '';
+      this.recipe = await this.recipeService.updateRecipe(urlId, this.recipe);
+      this.recipeForm.reset();
+      this.getRecipe();
+    } catch (err) {
+      this.formError = this.errorService.extractErrorMessage(err, `updating recipe ID ${urlId}`);
+    }
   }
 
   async saveNewRecipe(): Promise<void> {
@@ -101,8 +105,20 @@ export class RecipeDetailComponent implements OnInit {
       this.recipe = await this.recipeService.saveNewRecipe(this.recipe);
       this.goToListView();
     } catch (err) {
-      console.log(err);
-      this.formError = this.errorService.extractErrorMessage(err);
+      this.formError = this.errorService.extractErrorMessage(err, 'saving new recipe');
+    }
+  }
+
+  async deleteRecipe(): Promise<void> {
+    const urlId = +this.route.snapshot.paramMap.get('id');
+    if (confirm(`Are you sure you want to delete this recipe? This action cannot be undone.`)) {
+      try {
+        this.formError = '';
+        this.recipe = await this.recipeService.deleteRecipe(urlId);
+        this.goToListView();
+      } catch (err) {
+        this.formError = this.errorService.extractErrorMessage(err, `deleting recipe ID ${urlId}`);
+      }
     }
   }
 

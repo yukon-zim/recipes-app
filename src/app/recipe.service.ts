@@ -23,6 +23,10 @@ export class RecipeService {
     return await this.http.post<Recipe>(this.recipeUrl, recipe).toPromise();
   }
 
+  async deleteRecipe(id: number): Promise<string> {
+    return await this.http.delete<string>(`${this.recipeUrl}/${id}`).toPromise();
+  }
+
   constructor(
     private http: HttpClient
   ) { }
