@@ -4,8 +4,7 @@ import { RecipeService } from '../recipe.service';
 import { ErrorService } from '../error.service';
 
 import {ActivatedRoute, Router} from '@angular/router';
-import { Location } from '@angular/common';
-import {Form} from "@angular/forms";
+import {NgForm} from '@angular/forms';
 
 @Component({
   selector: 'app-recipe-detail',
@@ -14,8 +13,8 @@ import {Form} from "@angular/forms";
 })
 export class RecipeDetailComponent implements OnInit {
   @Input() recipe: Recipe;
-  @ViewChild('recipeForm') recipeForm: Form;
-  fieldInEditMode: object;
+  @ViewChild('recipeForm') recipeForm: NgForm;
+  fieldInEditMode: {fieldName: string, fieldIndex: number};
   newRecipeMode: boolean;
   formError: string;
 
@@ -59,25 +58,25 @@ export class RecipeDetailComponent implements OnInit {
   }
 
   moveIngredientUp(ingredientIndex) {
-    const ingredientToMove = this.recipe.ingredients.splice(ingredientIndex, 1);
+    const [ingredientToMove] = this.recipe.ingredients.splice(ingredientIndex, 1);
     this.recipe.ingredients.splice(ingredientIndex - 1, 0, ingredientToMove);
     this.recipeForm.form.markAsDirty();
   }
 
   moveIngredientDown(ingredientIndex) {
-    const ingredientToMove = this.recipe.ingredients.splice(ingredientIndex, 1);
+    const [ingredientToMove] = this.recipe.ingredients.splice(ingredientIndex, 1);
     this.recipe.ingredients.splice(ingredientIndex + 1, 0, ingredientToMove);
     this.recipeForm.form.markAsDirty();
   }
 
   moveInstructionUp(instructionIndex) {
-    const instructionToMove = this.recipe.instructions.splice(instructionIndex, 1);
+    const [instructionToMove] = this.recipe.instructions.splice(instructionIndex, 1);
     this.recipe.instructions.splice(instructionIndex - 1, 0, instructionToMove);
     this.recipeForm.form.markAsDirty();
   }
 
   moveInstructionDown(instructionIndex) {
-    const instructionToMove = this.recipe.instructions.splice(instructionIndex, 1);
+    const [instructionToMove] = this.recipe.instructions.splice(instructionIndex, 1);
     this.recipe.instructions.splice(instructionIndex + 1, 0, instructionToMove);
     this.recipeForm.form.markAsDirty();
   }
@@ -138,7 +137,7 @@ export class RecipeDetailComponent implements OnInit {
     if (confirm(`Are you sure you want to delete this recipe? This action cannot be undone.`)) {
       try {
         this.formError = '';
-        this.recipe = await this.recipeService.deleteRecipe(urlId);
+        await this.recipeService.deleteRecipe(urlId);
         this.goToListView();
       } catch (err) {
         this.formError = this.errorService.extractErrorMessage(err, `deleting recipe ID ${urlId}`);
