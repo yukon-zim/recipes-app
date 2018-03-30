@@ -1,4 +1,4 @@
-import { Recipe } from './recipe';
+import { Recipe } from '../../app/recipe';
 
 export const RECIPES: Recipe[] = [{
   id: 1,

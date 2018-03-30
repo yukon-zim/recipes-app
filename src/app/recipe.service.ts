@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Recipe } from './recipe';
-import { RECIPES } from './mock-recipes';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable()

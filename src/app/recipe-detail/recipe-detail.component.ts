@@ -95,13 +95,12 @@ export class RecipeDetailComponent implements OnInit {
     this.router.navigateByUrl('recipes');
   }
 
-  async getRecipe(): Promise<void> {
-    const urlId = +this.route.snapshot.paramMap.get('id');
-    if (urlId) {
+  async getRecipe(pmapId): Promise<void> {
+    if (pmapId) {
       try {
-        this.recipe = await this.recipeService.getRecipe(urlId);
+        this.recipe = await this.recipeService.getRecipe(pmapId);
       } catch (err) {
-        this.formError = this.errorService.extractErrorMessage(err, `loading recipe ID ${urlId}`);
+        this.formError = this.errorService.extractErrorMessage(err, `loading recipe ID ${pmapId}`);
       }
       this.newRecipeMode = false;
     } else {
@@ -116,7 +115,7 @@ export class RecipeDetailComponent implements OnInit {
       this.formError = '';
       this.recipe = await this.recipeService.updateRecipe(urlId, this.recipe);
       this.recipeForm.reset();
-      this.getRecipe();
+      this.getRecipe(urlId);
     } catch (err) {
       this.formError = this.errorService.extractErrorMessage(err, `updating recipe ID ${urlId}`);
     }
@@ -153,8 +152,10 @@ export class RecipeDetailComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getRecipe();
-    this.unfocusField();
+    this.route.paramMap.subscribe((pmap) => {
+      this.getRecipe(pmap.get('id'));
+      this.unfocusField();
+    });
   }
 
 }
