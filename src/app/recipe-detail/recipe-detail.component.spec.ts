@@ -54,8 +54,18 @@ describe('RecipeDetailComponent', () => {
     expect(component.recipe).toBeTruthy();
     for (const key in component.recipe) {
       if (component.recipe.hasOwnProperty(key)) {
-        expect(component.recipe[key]).toBe(expectedRecipe[key]);
+        expect(component.recipe[key]).toEqual(expectedRecipe[key]);
       }
     }
+  });
+
+  it('should be able to add an ingredient to UI of an existing recipe in the model', async () => {
+    const expectedRecipe = RECIPES[0];
+    await activatedRoute.setParamMap({id: expectedRecipe.id});
+    const initialIngredients = component.recipe.ingredients.slice(0);
+    expect(initialIngredients).toEqual(expectedRecipe.ingredients);
+    component.addIngredient();
+    expect(component.recipe.ingredients.length).toEqual(initialIngredients.length + 1);
+    expect(component.isFieldInEditMode('ingredients', initialIngredients.length)).toBe(true);
   });
 });
