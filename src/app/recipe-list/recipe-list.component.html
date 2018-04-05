@@ -3,6 +3,9 @@
   <button id="add-new-recipe" routerLink="/detail/new">Add new recipe!</button>
 </div>
 <div>
+  <input #searchBox id="search-recipes-field" (keyup)="searchRecipes(searchBox.value)" placeholder="Search recipes"/>
+</div>
+<div>
   <ul class="recipes">
     <li *ngFor="let recipe of recipes">
       <a routerLink="/detail/{{recipe.id}}">
@@ -10,15 +13,22 @@
       </a>
     </li>
   </ul>
+  <span *ngIf="searchInProgress && recipes != undefined && recipes.length === 0">No recipes found</span>
+  <span *ngIf="!searchInProgress && recipes != undefined && recipes.length === 0">Why not add/import some recipes?</span>
 </div>
 <div>
   <div>
-    <label for="csv-file-upload">Import recipes by CSV</label>
+    <label for="csv-file-upload">Import recipes by CSV:</label>
   </div>
   <div>
     <input id="csv-file-upload" type="file" #csvFile (change)="onSelectFile(csvFile.files)"/>
     <button *ngIf="csvImportEnabled" (click)="importRecipe(csvFile.files)">Import CSV</button>
     <button *ngIf="csvImportEnabled" (click)="cancelImport()">Cancel import</button>
+  </div>
+  <div>
+      <span class="error-message">
+        {{importError}}
+      </span>
   </div>
 </div>
 
