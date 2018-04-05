@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Recipe } from './recipe';
 import { HttpClient } from '@angular/common/http';
+import {Observable} from "rxjs/Observable";
 
 @Injectable()
 export class RecipeService {
@@ -8,6 +9,10 @@ export class RecipeService {
 
   async getRecipes(): Promise<Recipe[]> {
     return await this.http.get<Recipe[]>(this.recipeUrl).toPromise();
+  }
+
+  searchRecipes(searchTerm: string): Observable<Recipe[]> {
+    return this.http.get<Recipe[]>(`${this.recipeUrl}?searchTerm=${searchTerm}`);
   }
 
   async getRecipe(id: number): Promise<Recipe> {
