@@ -1,10 +1,24 @@
 <h2>My Recipes</h2>
-<button routerLink="/detail/new">Add new recipe!</button>
-<ul class="recipes">
-  <li *ngFor="let recipe of recipes">
-    <a routerLink="/detail/{{recipe.id}}">
-    <span class="badge">{{recipe.id}}:</span> {{recipe.name | uppercase}}
-    </a>
-  </li>
-</ul>
+<div>
+  <button id="add-new-recipe" routerLink="/detail/new">Add new recipe!</button>
+</div>
+<div>
+  <ul class="recipes">
+    <li *ngFor="let recipe of recipes">
+      <a routerLink="/detail/{{recipe.id}}">
+        <span class="badge">{{recipe.id}}:</span> {{recipe.name | uppercase}}
+      </a>
+    </li>
+  </ul>
+</div>
+<div>
+  <div>
+    <label for="csv-file-upload">Import recipes by CSV</label>
+  </div>
+  <div>
+    <input id="csv-file-upload" type="file" #csvFile (change)="onSelectFile(csvFile.files)"/>
+    <button *ngIf="csvImportEnabled" (click)="importRecipe(csvFile.files)">Import CSV</button>
+    <button *ngIf="csvImportEnabled" (click)="cancelImport()">Cancel import</button>
+  </div>
+</div>
 

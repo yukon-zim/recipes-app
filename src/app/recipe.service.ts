@@ -26,6 +26,10 @@ export class RecipeService {
     return await this.http.delete<object>(`${this.recipeUrl}/${id}`).toPromise();
   }
 
+  async importRecipe(formData: FormData): Promise<object> {
+    return await this.http.post<object>(`${this.recipeUrl}/import`, formData).toPromise();
+  }
+
   constructor(
     private http: HttpClient
   ) { }
