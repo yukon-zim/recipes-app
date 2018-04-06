@@ -1,10 +1,11 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import { RecipeService } from '../recipe.service';
 import { Recipe } from '../recipe';
-import {Observable} from "rxjs/Observable";
-import {Subject} from "rxjs/Subject";
-import{debounceTime, distinctUntilChanged, switchMap} from 'rxjs/operators';
-import {ErrorService} from "../error.service";
+import {Observable} from 'rxjs/Observable';
+import {Subject} from 'rxjs/Subject';
+import { debounceTime, distinctUntilChanged, switchMap} from 'rxjs/operators';
+import {ErrorService} from '../error.service';
+import {orderBy} from 'lodash';
 
 @Component({
   selector: 'app-recipe-list',
@@ -19,7 +20,10 @@ export class RecipeListComponent implements OnInit {
   private searchTerms = new Subject<string>();
   searchResults: Observable<Recipe[]>;
   searchInProgress: boolean;
+  currentSearchTerm: string;
   importError: string;
+  currentSortByField: string;
+  currentSortByOrder: string;
 
   async getRecipes(): Promise<void> {
     this.recipes = await this.recipeService.getRecipes();
@@ -30,11 +34,30 @@ export class RecipeListComponent implements OnInit {
       this.searchInProgress = false;
     }
     this.searchTerms.next(searchTerm);
-
+    this.currentSearchTerm = searchTerm;
   }
 
   onSelect(recipe: Recipe): void {
     this.selectedRecipe = recipe;
+  }
+
+  trackByIndex(index: number, item: string) {
+    return index;
+  }
+
+  sortByColumnHeader(field: string) {
+    if (field === this.currentSortByField) {
+      if (this.currentSortByOrder === 'asc') {
+        this.currentSortByOrder = 'desc';
+      } else {
+        this.currentSortByOrder = 'asc';
+      }
+      this.recipes = orderBy(this.recipes, field, this.currentSortByOrder);
+    } else {
+      this.currentSortByOrder = 'asc';
+      this.recipes = orderBy(this.recipes, field, this.currentSortByOrder);
+    }
+    this.currentSortByField = field;
   }
 
   async importRecipe(fileProperty: FileList): Promise<void> {
@@ -66,6 +89,7 @@ export class RecipeListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.recipes = [];
     this.getRecipes();
     this.searchResults = this.searchTerms.pipe(
       // time to wait after each keystroke before parsing search term
@@ -77,7 +101,11 @@ export class RecipeListComponent implements OnInit {
     );
     this.searchResults.subscribe(recipes => {
       this.recipes = recipes;
-      this.searchInProgress = true;
+      if (this.currentSearchTerm.trim()) {
+        this.searchInProgress = true;
+      } else {
+        this.searchInProgress = false;
+      }
     });
   }
 

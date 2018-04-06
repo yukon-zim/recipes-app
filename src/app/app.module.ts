@@ -10,13 +10,15 @@ import { RecipeDetailComponent } from './recipe-detail/recipe-detail.component';
 import { AppRoutingModule } from './app-routing.module';
 import { RecipeService } from './recipe.service';
 import {ErrorService} from './error.service';
+import { HeaderComponent } from './header/header.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     RecipeListComponent,
-    RecipeDetailComponent
+    RecipeDetailComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,

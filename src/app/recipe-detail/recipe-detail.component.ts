@@ -95,7 +95,14 @@ export class RecipeDetailComponent implements OnInit {
     this.router.navigateByUrl('recipes');
   }
 
-  async getRecipe(pmapId): Promise<void> {
+  canDeactivate() {
+    if (this.recipeForm.form.dirty) {
+      return confirm(`Unsaved changes - are you sure you want to leave this page?`);
+    }
+    return true;
+  }
+
+  async getRecipe(pmapId: number): Promise<void> {
     if (pmapId) {
       try {
         this.recipe = await this.recipeService.getRecipe(pmapId);
@@ -153,7 +160,7 @@ export class RecipeDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((pmap) => {
-      this.getRecipe(pmap.get('id'));
+      this.getRecipe(+pmap.get('id'));
       this.unfocusField();
     });
   }

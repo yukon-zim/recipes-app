@@ -1,34 +1,71 @@
-<h2>My Recipes</h2>
-<div>
-  <button id="add-new-recipe" routerLink="/detail/new">Add new recipe!</button>
-</div>
-<div>
-  <input #searchBox id="search-recipes-field" (keyup)="searchRecipes(searchBox.value)" placeholder="Search recipes"/>
-</div>
-<div>
-  <ul class="recipes">
-    <li *ngFor="let recipe of recipes">
-      <a routerLink="/detail/{{recipe.id}}">
-        <span class="badge">{{recipe.id}}:</span> {{recipe.name | uppercase}}
-      </a>
-    </li>
-  </ul>
-  <span *ngIf="searchInProgress && recipes != undefined && recipes.length === 0">No recipes found</span>
-  <span *ngIf="!searchInProgress && recipes != undefined && recipes.length === 0">Why not add/import some recipes?</span>
-</div>
-<div>
+<div class="container-fluid">
+  <div class="mb-4">
+    <input #searchBox id="search-recipes-field" size="40" (keyup)="searchRecipes(searchBox.value)" placeholder="Search recipes"/>
+  </div>
+  <h2 *ngIf="!searchInProgress">My {{recipes.length}} Recipes</h2>
+  <h2 *ngIf="searchInProgress">Search results:  {{recipes.length}} recipe(s)</h2>
   <div>
-    <label for="csv-file-upload">Import recipes by CSV:</label>
+    <table class="recipes table">
+      <thead>
+      <tr class="row">
+        <th class="col-7 ml-2">
+          <a (click)="sortByColumnHeader('name')" [routerLink]="">Name</a>
+        </th>
+        <th class="col-2">
+          <a (click)="sortByColumnHeader('category')" [routerLink]="">Category</a>
+        </th>
+        <th class="col-2">
+          <a (click)="sortByColumnHeader('numberOfServings')" [routerLink]="">Servings</a>
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="row" *ngFor="let recipe of recipes;let index = index; trackBy:trackByIndex;">
+        <td class="col-7 ml-2">
+          <a routerLink="/detail/{{recipe.id}}">
+            <span>{{recipe.name | uppercase}}</span>
+          </a>
+        </td>
+        <td class="col-2">
+          <a>
+            <span>{{recipe.category}}</span>
+          </a>
+        </td>
+        <td class="col-2">
+          <a>
+            <span>{{recipe.numberOfServings}}</span>
+          </a>
+        </td>
+      </tr>
+      <tr *ngIf="searchInProgress && recipes != undefined && recipes.length === 0">
+        <td>
+          <span>No recipes found</span>
+        </td>
+      </tr>
+      <tr *ngIf="!searchInProgress && recipes != undefined && recipes.length === 0">
+        <td>
+          <span>Why not add/import some recipes?</span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="mb-4">
+    <button class="btn btn-primary" id="add-new-recipe" routerLink="/detail/new">Add new recipe!</button>
   </div>
   <div>
-    <input id="csv-file-upload" type="file" #csvFile (change)="onSelectFile(csvFile.files)"/>
-    <button *ngIf="csvImportEnabled" (click)="importRecipe(csvFile.files)">Import CSV</button>
-    <button *ngIf="csvImportEnabled" (click)="cancelImport()">Cancel import</button>
-  </div>
-  <div>
+    <div>
+      <label for="csv-file-upload">Import recipes by CSV:</label>
+    </div>
+    <div>
+      <input id="csv-file-upload" type="file" #csvFile (change)="onSelectFile(csvFile.files)"/>
+      <button class="btn btn-secondary btn-sm" *ngIf="csvImportEnabled" (click)="importRecipe(csvFile.files)">Import CSV</button>
+      <button class="btn btn-secondary btn-sm" *ngIf="csvImportEnabled" (click)="cancelImport()">Cancel import</button>
+    </div>
+    <div>
       <span class="error-message">
         {{importError}}
       </span>
+    </div>
   </div>
 </div>
-
