@@ -1,4 +1,4 @@
-import {Component, OnInit, Input, ViewChild} from '@angular/core';
+import {Component, OnInit, Input, ViewChild, Renderer2} from '@angular/core';
 import { Recipe } from '../recipe';
 import { RecipeService } from '../recipe.service';
 import { ErrorService } from '../error.service';
@@ -23,7 +23,11 @@ export class RecipeDetailComponent implements OnInit {
     return index;
   }
 
-  editField(fieldName, index) {
+  editField(fieldName, index, gainFocus) {
+   if (gainFocus) {
+     let onElement = this.renderer2.selectRootElement(`#${fieldName}`);
+     onElement.focus();
+   }
     this.fieldInEditMode = {fieldName, fieldIndex: index};
   }
 
@@ -49,12 +53,12 @@ export class RecipeDetailComponent implements OnInit {
 
   addIngredient() {
     this.recipe.ingredients.push('');
-    this.editField('ingredients', this.recipe.ingredients.length - 1);
+    this.editField('ingredients', this.recipe.ingredients.length - 1, true);
   }
 
   addInstruction() {
     this.recipe.instructions.push('');
-    this.editField('instructions', this.recipe.instructions.length - 1);
+    this.editField('instructions', this.recipe.instructions.length - 1, true);
   }
 
   moveIngredientUp(ingredientIndex) {
@@ -155,7 +159,8 @@ export class RecipeDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private recipeService: RecipeService,
     private errorService: ErrorService,
-    private router: Router
+    private router: Router,
+    private renderer2: Renderer2
   ) { }
 
   ngOnInit(): void {

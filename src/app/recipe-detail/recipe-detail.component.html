@@ -7,7 +7,7 @@
     <div><span>ID </span>{{recipe.id}}</div>
     <div>
       <label>Name:</label>
-      <span (click)="editField('name')" *ngIf="!isFieldInEditMode('name')">{{recipe.name}}</span>
+      <span (click)="editField('name', undefined, true)" *ngIf="!isFieldInEditMode('name')">{{recipe.name}}</span>
       <input id = "name"
              [(ngModel)]="recipe.name" type = "text"
              #name="ngModel"
@@ -31,7 +31,7 @@
     </div>
     <div>
       <label>Category:</label>
-      <span (click)="editField('category')" *ngIf="!isFieldInEditMode('category')">{{recipe.category}}</span>
+      <span (click)="editField('category', undefined, true)" *ngIf="!isFieldInEditMode('category')">{{recipe.category}}</span>
       <input id="category"
              [(ngModel)]="recipe.category" type = "text"
              placeholder="category"
@@ -45,11 +45,11 @@
     </div>
     <div>
       <label>Number of Servings:
-        <span (click)="editField('numberOfServings')" *ngIf="!isFieldInEditMode('numberOfServings')">{{recipe.numberOfServings}}</span>
+        <span (click)="editField('numberOfServings', undefined, true)" *ngIf="!isFieldInEditMode('numberOfServings')">{{recipe.numberOfServings}}</span>
         <input id="numberOfServings"
                [(ngModel)]="recipe.numberOfServings"
                placeholder="number of servings"
-               *ngIf="isFieldInEditMode('numberOfServings')"
+               [hidden]="!isFieldInEditMode('numberOfServings')"
                (keyup.enter)="unfocusField('numberOfServings')"
                (focusout)="unfocusField('numberOfServings')"
                (focusin)="editField('numberOfServings')"
@@ -111,7 +111,7 @@
     </div>
     <div>
       <label>Notes:</label>
-      <span (click)="editField('notes')" *ngIf="!isFieldInEditMode('notes')">{{recipe.notes}}</span>
+      <pre (click)="editField('notes', undefined, true)" *ngIf="!isFieldInEditMode('notes')">{{recipe.notes}}</pre>
       <div>
     <textarea [(ngModel)]="recipe.notes"
               placeholder="miscellaneous notes"
