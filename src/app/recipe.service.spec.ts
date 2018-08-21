@@ -47,28 +47,28 @@ fdescribe('RecipeService', () => {
     const testSearchTerm = 'test';
     it('should return the expected data',  done => {
       const recipesObservable = service.searchRecipes(testSearchTerm);
-      const testRequest = httpController.expectOne(
-        `http://localhost:1337/recipes`,
-        'call to searchRecipes URL');
       const expectedResponse = 'mock response';
-      expect(testRequest.request.method).toEqual('GET');
-      testRequest.flush(expectedResponse);
       recipesObservable.subscribe(recipes => {
         expect(recipes).toEqual(expectedResponse);
         done();
       });
+      const testRequest = httpController.expectOne(
+        `http://localhost:1337/recipes?searchTerm=${testSearchTerm}`,
+        'call to searchRecipes URL');
+      expect(testRequest.request.method).toEqual('GET');
+      testRequest.flush(expectedResponse);
     });
     it('should throw an error if the server responds with an error', done => {
       const recipesObservable = service.searchRecipes(testSearchTerm);
-      const testRequest = httpController.expectOne(
-        `http://localhost:1337/recipes`,
-        'call to searchRecipes URL');
       const mockError = new ErrorEvent('mock network failure');
+      recipesObservable.subscribe(undefined, err => {
+        expect(err.error).toEqual(mockError);
+        done();
+      });
+      const testRequest = httpController.expectOne(
+        `http://localhost:1337/recipes?searchTerm=${testSearchTerm}`,
+        'call to searchRecipes URL');
       testRequest.error(mockError);
-        recipesObservable.subscribe(undefined, err => {
-          expect(err.error).toEqual(mockError);
-          done();
-        });
     });
   });
   describe('getRecipe()', () => {
