@@ -91,6 +91,7 @@ export class RecipeListComponent implements OnInit {
   ngOnInit() {
     this.recipes = [];
     this.getRecipes();
+    this.searchInProgress = false;
     this.searchResults = this.searchTerms.pipe(
       // time to wait after each keystroke before parsing search term
       debounceTime(300),

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 
 import { RecipeListComponent } from './recipe-list.component';
 import {RouterTestingModule} from '@angular/router/testing';
@@ -14,11 +14,14 @@ describe('RecipeListComponent', () => {
 
   beforeEach(async(() => {
     spyErrorService = jasmine.createSpyObj('ErrorService', ['extractErrorMessage']);
-    spyRecipeService = jasmine.createSpyObj('RecipeService', {
-      'getRecipes': Promise.resolve(RECIPES),
-      'importRecipe': Promise.resolve(),
-      'searchRecipes': Promise.resolve()
-    });
+    spyRecipeService = jasmine.createSpyObj('RecipeService', [
+      'getRecipes',
+      'importRecipe',
+      'searchRecipes'
+      // 'getRecipes': Promise.resolve(RECIPES),
+      // 'importRecipe': Promise.resolve(),
+      // 'searchRecipes': Promise.resolve([RECIPES[0]])
+    ]);
     TestBed.configureTestingModule({
       declarations: [ RecipeListComponent ],
       imports: [RouterTestingModule],
@@ -39,7 +42,57 @@ describe('RecipeListComponent', () => {
   it('should create an instance of the component under test', () => {
     expect(component).toBeTruthy();
   });
-  it('should load recipes', async () => {
+  it('should load recipes on startup', fakeAsync(() => {
+    spyRecipeService.getRecipes.and.returnValue(Promise.resolve(RECIPES));
+    component.ngOnInit();
+    tick(300);
+    expect(spyRecipeService.getRecipes).toHaveBeenCalledWith();
+    expect(component.recipes).toEqual(RECIPES);
+  }));
+  describe('search function', () => {
+    it('searchInProgress should update correctly when changing search terms', fakeAsync( () => {
+      spyRecipeService.getRecipes.and.returnValue(Promise.resolve(RECIPES));
+      spyRecipeService.searchRecipes.and.returnValue(Promise.resolve([RECIPES[0]]));
+      component.ngOnInit();
+      tick(301);
+      fixture.detectChanges();
+      let compiled = fixture.debugElement.nativeElement;
+      expect(compiled.querySelector('h2').textContent).toContain(`My ${component.recipes.length} Recipes`);
+      expect(component.searchInProgress).toBe(false);
+      component.searchRecipes('test');
+      tick(301);
+      fixture.detectChanges();
+      compiled = fixture.debugElement.nativeElement;
+      expect(compiled.querySelector('h2').textContent).toContain(`Search results:  ${component.recipes.length} recipe(s)`);
+      expect(component.searchInProgress).toBe(true);
+      component.searchRecipes('    ');
+      tick(301);
+      fixture.detectChanges();
+      compiled = fixture.debugElement.nativeElement;
+      expect(compiled.querySelector('h2').textContent).toContain(`My ${component.recipes.length} Recipes`);
+      expect(component.searchInProgress).toBe(false);
+    }));
+    it('should update component.recipes based on data returned from service', fakeAsync(() => {
+      spyRecipeService.getRecipes.and.returnValue(Promise.resolve(RECIPES));
+      spyRecipeService.searchRecipes.and.returnValue(Promise.resolve([RECIPES[0]]));
+      const searchTerm = 'test';
+      component.ngOnInit();
+      tick(301);
+      const initialRecipes = component.recipes;
+      component.searchRecipes(searchTerm);
+      tick(301);
+      expect(spyRecipeService.searchRecipes).toHaveBeenCalledWith(searchTerm);
+      expect(component.currentSearchTerm).toEqual(searchTerm);
+      fixture.detectChanges();
+      expect(component.recipes).not.toEqual(initialRecipes);
+    }));
+  });
+  describe('csv import function', () => {
+    it('success case', () => {
 
-  })
+    });
+    it('failure case', () => {
+
+    });
+  });
 });
