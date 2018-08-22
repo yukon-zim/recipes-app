@@ -23,11 +23,7 @@ export class RecipeDetailComponent implements OnInit {
     return index;
   }
 
-  editField(fieldName, index, gainFocus) {
-   if (gainFocus) {
-     let onElement = this.renderer2.selectRootElement(`#${fieldName}`);
-     onElement.focus();
-   }
+  editField(fieldName, index) {
     this.fieldInEditMode = {fieldName, fieldIndex: index};
   }
 
@@ -44,6 +40,10 @@ export class RecipeDetailComponent implements OnInit {
     if (this.recipe[fieldName] === '') {
       return true;
     }
+    return this.isFieldInEditAndFocus(fieldName, index);
+  }
+
+  isFieldInEditAndFocus(fieldName: string, index: number) {
     return this.fieldInEditMode.fieldName === fieldName && this.fieldInEditMode.fieldIndex === index;
   }
 
@@ -53,12 +53,12 @@ export class RecipeDetailComponent implements OnInit {
 
   addIngredient() {
     this.recipe.ingredients.push('');
-    this.editField('ingredients', this.recipe.ingredients.length - 1, true);
+    this.editField('ingredients', this.recipe.ingredients.length - 1);
   }
 
   addInstruction() {
     this.recipe.instructions.push('');
-    this.editField('instructions', this.recipe.instructions.length - 1, true);
+    this.editField('instructions', this.recipe.instructions.length - 1);
   }
 
   moveIngredientUp(ingredientIndex) {
