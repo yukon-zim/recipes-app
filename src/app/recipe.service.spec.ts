@@ -1,10 +1,8 @@
 import { TestBed, inject, getTestBed } from '@angular/core/testing';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import { RecipeService } from './recipe.service';
-import {RECIPES} from '../testing/fixtures/recipe-fixtures';
 
-
-fdescribe('RecipeService', () => {
+describe('RecipeService', () => {
   let service;
   let httpController;
   beforeEach(() => {
