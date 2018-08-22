@@ -40,6 +40,9 @@ export class RecipeDetailComponent implements OnInit {
     if (this.recipe[fieldName] === '') {
       return true;
     }
+    if (index !== null && index !== undefined && this.recipe[fieldName][index] === '') {
+      return true;
+    }
     return this.isFieldInEditAndFocus(fieldName, index);
   }
 
@@ -48,7 +51,7 @@ export class RecipeDetailComponent implements OnInit {
   }
 
   unfocusField() {
-    this.fieldInEditMode = {fieldName: null, fieldIndex: null};
+    this.fieldInEditMode = {fieldName: '', fieldIndex: undefined};
   }
 
   addIngredient() {

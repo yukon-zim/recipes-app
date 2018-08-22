@@ -36,7 +36,10 @@ describe('RecipeListComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create an instance of the component under test', () => {
     expect(component).toBeTruthy();
   });
+  it('should load recipes', async () => {
+
+  })
 });
