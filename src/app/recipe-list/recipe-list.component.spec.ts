@@ -65,7 +65,7 @@ describe('RecipeListComponent', () => {
     component.sortByColumnHeader('category');
     expect(component.currentSortByField).toEqual('category');
     expect(component.currentSortByOrder).toEqual('desc');
-    expect(component.recipes).toEqual(RECIPES.slice().reverse());
+    expect(component.recipes).toEqual(RECIPES.slice(0).reverse());
     component.sortByColumnHeader('category');
     expect(component.currentSortByField).toEqual('category');
     expect(component.currentSortByOrder).toEqual('asc');
