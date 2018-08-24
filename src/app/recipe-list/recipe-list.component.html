@@ -58,7 +58,7 @@
       <label for="csv-file-upload">Import recipes by CSV:</label>
     </div>
     <div>
-      <input id="csv-file-upload" type="file" #csvFile (change)="onSelectFile(csvFile.files)"/>
+      <input id="csv-file-upload" type="file" #csvFile (change)="onSelectFile()"/>
       <button class="btn btn-secondary btn-sm" *ngIf="csvImportEnabled" (click)="importRecipe(csvFile.files)">Import CSV</button>
       <button class="btn btn-secondary btn-sm" *ngIf="csvImportEnabled" (click)="cancelImport()">Cancel import</button>
     </div>

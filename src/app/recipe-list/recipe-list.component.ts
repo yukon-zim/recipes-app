@@ -66,10 +66,10 @@ export class RecipeListComponent implements OnInit {
     formData.append('importedRecipes', fileProperty[0]);
     try {
       await this.recipeService.importRecipe(formData);
+      await this.getRecipes();
     } catch (err) {
       this.importError = this.errorService.extractErrorMessage(err, `importing recipes`);
     }
-    await this.getRecipes();
     this.cancelImport();
   }
 
@@ -78,7 +78,7 @@ export class RecipeListComponent implements OnInit {
     this.csvImportEnabled = false;
   }
 
-  onSelectFile(fileProperty: FileList) {
+  onSelectFile() {
     this.csvImportEnabled = true;
   }
 
@@ -92,6 +92,7 @@ export class RecipeListComponent implements OnInit {
     this.recipes = [];
     this.getRecipes();
     this.searchInProgress = false;
+    this.csvImportEnabled = false;
     this.searchResults = this.searchTerms.pipe(
       // time to wait after each keystroke before parsing search term
       debounceTime(300),

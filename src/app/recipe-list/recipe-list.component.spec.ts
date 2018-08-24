@@ -5,6 +5,7 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {RECIPES} from "../../testing/fixtures/recipe-fixtures";
 import {RecipeService} from "../recipe.service";
 import {ErrorService} from "../error.service";
+import {defer} from "rxjs/observable/defer";
 
 describe('RecipeListComponent', () => {
   let component: RecipeListComponent;
@@ -52,7 +53,9 @@ describe('RecipeListComponent', () => {
   describe('search function', () => {
     it('searchInProgress should update correctly when changing search terms', fakeAsync( () => {
       spyRecipeService.getRecipes.and.returnValue(Promise.resolve(RECIPES));
-      spyRecipeService.searchRecipes.and.returnValue(Promise.resolve([RECIPES[0]]));
+      spyRecipeService.searchRecipes.and.returnValue(defer(() => {
+        return Promise.resolve([RECIPES[0]]);
+      }));
       component.ngOnInit();
       tick(301);
       fixture.detectChanges();
@@ -74,7 +77,9 @@ describe('RecipeListComponent', () => {
     }));
     it('should update component.recipes based on data returned from service', fakeAsync(() => {
       spyRecipeService.getRecipes.and.returnValue(Promise.resolve(RECIPES));
-      spyRecipeService.searchRecipes.and.returnValue(Promise.resolve([RECIPES[0]]));
+      spyRecipeService.searchRecipes.and.returnValue(defer(() => {
+        return Promise.resolve([RECIPES[0]]);
+      }));
       const searchTerm = 'test';
       component.ngOnInit();
       tick(301);
@@ -88,11 +93,33 @@ describe('RecipeListComponent', () => {
     }));
   });
   describe('csv import function', () => {
-    it('success case', () => {
-
+    it('success case: csvImport should be called without error and csvImportEnabled should be set correctly', async () => {
+      const mockFileListWrapper = new DataTransfer();
+      mockFileListWrapper.items.add(new File(['importedRecipes'], 'mock-import-file.csv'));
+      spyRecipeService.importRecipe.and.returnValue(Promise.resolve());
+      expect(component.csvImportEnabled).toEqual(false);
+      component.onSelectFile();
+      expect(component.csvImportEnabled).toEqual(true);
+      await component.importRecipe(mockFileListWrapper.files);
+      expect(spyRecipeService.importRecipe).toHaveBeenCalled();
+      expect(spyRecipeService.getRecipes).toHaveBeenCalledTimes(2);
+      expect(component.importError).toEqual('');
+      expect(component.csvImportEnabled).toEqual(false);
     });
-    it('failure case', () => {
-
+    it('failure case: should throw import error and csvImportEnabled should be set correctly', async () => {
+      const mockFileListWrapper = new DataTransfer();
+      const mockError = 'mock import error';
+      mockFileListWrapper.items.add(new File(['importedRecipes'], 'mock-import-file.csv'));
+      spyRecipeService.importRecipe.and.throwError(mockError);
+      spyErrorService.extractErrorMessage.and.returnValue(mockError);
+      expect(component.csvImportEnabled).toEqual(false);
+      component.onSelectFile();
+      expect(component.csvImportEnabled).toEqual(true);
+      await component.importRecipe(mockFileListWrapper.files);
+      expect(spyRecipeService.importRecipe).toHaveBeenCalled();
+      expect(spyRecipeService.getRecipes).toHaveBeenCalledTimes(1);
+      expect(component.importError).toEqual(mockError);
+      expect(component.csvImportEnabled).toEqual(false);
     });
   });
 });
