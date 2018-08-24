@@ -5,7 +5,7 @@ import {FormsModule} from '@angular/forms';
 import {RouterTestingModule} from '@angular/router/testing';
 import {RecipeService} from '../recipe.service';
 import {ErrorService} from '../error.service';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ActivatedRouteStub} from '../../testing/activated-route-stub';
 import {RECIPES} from '../../testing/fixtures/recipe-fixtures';
 import {Recipe} from "../recipe";
@@ -17,6 +17,7 @@ describe('RecipeDetailComponent', () => {
   let activatedRoute: ActivatedRouteStub;
   let spyRecipeService;
   let spyErrorService;
+  let spyRouter;
 
   beforeEach(async(() => {
     spyRecipeService = jasmine.createSpyObj('RecipeService', {
@@ -26,13 +27,13 @@ describe('RecipeDetailComponent', () => {
       'deleteRecipe': Promise.resolve()
     });
     spyErrorService = jasmine.createSpyObj('ErrorService', ['extractErrorMessage']);
+    spyRouter = jasmine.createSpyObj('Router', ['navigateByUrl']);
     activatedRoute = new ActivatedRouteStub();
     TestBed.configureTestingModule({
       declarations: [ RecipeDetailComponent, RecipeListComponent],
-      imports: [FormsModule, RouterTestingModule.withRoutes([
-        { path: 'recipes', component: RecipeListComponent }
-      ])],
+      imports: [FormsModule, RouterTestingModule],
       providers: [
+        {provide: Router, useValue: spyRouter},
         {provide: RecipeService, useValue: spyRecipeService},
         {provide: ErrorService, useValue: spyErrorService},
         {provide: ActivatedRoute, useValue: activatedRoute}
@@ -159,6 +160,7 @@ describe('RecipeDetailComponent', () => {
       expect(component.newRecipeMode).toEqual(true);
       await component.saveNewRecipe();
       expect(spyRecipeService.saveNewRecipe).toHaveBeenCalledWith(blankRecipe);
+      expect(spyRouter.navigateByUrl).toHaveBeenCalledWith('recipes');
     });
   });
 });
