@@ -27,7 +27,7 @@ export const RECIPES: Recipe[] = [{
 }, {
   id: 2,
   name: 'Red Beans and Rice',
-  category: 'Vegetarian',
+  category: 'vegetarian',
   ingredients: [
     '2 tbsp olive oil',
     '2 tbsp all-purpose flour',

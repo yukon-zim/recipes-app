@@ -50,6 +50,31 @@ describe('RecipeListComponent', () => {
     expect(spyRecipeService.getRecipes).toHaveBeenCalledWith();
     expect(component.recipes).toEqual(RECIPES);
   }));
+  it('sortByColumnHeader should work correctly', fakeAsync(() => {
+    spyRecipeService.getRecipes.and.returnValue(Promise.resolve(RECIPES));
+    component.ngOnInit();
+    tick(300);
+    expect(component.recipes).toEqual(RECIPES);
+    expect(component.currentSortByField).toEqual(undefined);
+    expect(component.currentSortByOrder).toEqual(undefined);
+    expect(component.recipes).toEqual(RECIPES);
+    component.sortByColumnHeader('category');
+    expect(component.currentSortByField).toEqual('category');
+    expect(component.currentSortByOrder).toEqual('asc');
+    expect(component.recipes).toEqual(RECIPES);
+    component.sortByColumnHeader('category');
+    expect(component.currentSortByField).toEqual('category');
+    expect(component.currentSortByOrder).toEqual('desc');
+    expect(component.recipes).toEqual(RECIPES.slice().reverse());
+    component.sortByColumnHeader('category');
+    expect(component.currentSortByField).toEqual('category');
+    expect(component.currentSortByOrder).toEqual('asc');
+    expect(component.recipes).toEqual(RECIPES);
+    component.sortByColumnHeader('name');
+    expect(component.currentSortByField).toEqual('name');
+    expect(component.currentSortByOrder).toEqual('asc');
+    expect(component.recipes).toEqual(RECIPES);
+  }));
   describe('search function', () => {
     it('searchInProgress should update correctly when changing search terms', fakeAsync( () => {
       spyRecipeService.getRecipes.and.returnValue(Promise.resolve(RECIPES));

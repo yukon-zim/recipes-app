@@ -37,10 +37,6 @@ export class RecipeListComponent implements OnInit {
     this.currentSearchTerm = searchTerm;
   }
 
-  onSelect(recipe: Recipe): void {
-    this.selectedRecipe = recipe;
-  }
-
   trackByIndex(index: number, item: string) {
     return index;
   }
