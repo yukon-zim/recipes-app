@@ -30,7 +30,7 @@ describe('RecipeDetailComponent', () => {
     spyRouter = jasmine.createSpyObj('Router', ['navigateByUrl']);
     activatedRoute = new ActivatedRouteStub();
     TestBed.configureTestingModule({
-      declarations: [ RecipeDetailComponent, RecipeListComponent],
+      declarations: [RecipeDetailComponent, RecipeListComponent],
       imports: [FormsModule, RouterTestingModule],
       providers: [
         {provide: Router, useValue: spyRouter},
@@ -48,7 +48,7 @@ describe('RecipeDetailComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create an instance of the component under test', () => {
     expect(component).toBeTruthy();
   });
 
@@ -153,14 +153,62 @@ describe('RecipeDetailComponent', () => {
     });
   });
   describe('saveNewRecipe', () => {
-    it('should successfully save a new recipe', async () => {
+    it('success case: should successfully save a new recipe', async () => {
       const blankRecipe = new Recipe();
       await component.getRecipe(null);
       expect(component.recipe).toEqual(blankRecipe);
       expect(component.newRecipeMode).toEqual(true);
+      spyRecipeService.saveNewRecipe.and.returnValue(Promise.resolve(blankRecipe));
       await component.saveNewRecipe();
       expect(spyRecipeService.saveNewRecipe).toHaveBeenCalledWith(blankRecipe);
       expect(spyRouter.navigateByUrl).toHaveBeenCalledWith('recipes');
+      expect(component.formError).toEqual('');
+      expect(component.recipe).toEqual(blankRecipe);
+    });
+    it('failure case: should throw error', async () => {
+      const blankRecipe = new Recipe();
+      const mockError = 'mock saveNewRecipe error';
+      await component.getRecipe(null);
+      expect(component.recipe).toEqual(blankRecipe);
+      expect(component.newRecipeMode).toEqual(true);
+      spyRecipeService.saveNewRecipe.and.throwError(mockError);
+      spyErrorService.extractErrorMessage.and.returnValue(mockError);
+      await component.saveNewRecipe();
+      expect(spyRecipeService.saveNewRecipe).toHaveBeenCalledWith(blankRecipe);
+      expect(component.recipe).toEqual(blankRecipe);
+      expect(spyRouter.navigateByUrl).not.toHaveBeenCalled();
+      expect(spyErrorService.extractErrorMessage).toHaveBeenCalledWith(new Error(mockError), 'saving new recipe');
+      expect(component.formError).toEqual(mockError);
+    });
+  });
+  describe('updateRecipe', () => {
+    it('success case: should successfully update a recipe', async () => {
+      const expectedRecipe = RECIPES[0];
+      await activatedRoute.setParamMap({id: expectedRecipe.id});
+      expect(component.recipe).toEqual(expectedRecipe);
+      expect(component.newRecipeMode).toEqual(false);
+      component.recipe.category = 'test update';
+      const updatedRecipe = component.recipe;
+      spyRecipeService.updateRecipe.and.returnValue(Promise.resolve(updatedRecipe));
+      await component.updateRecipe();
+      expect(spyRecipeService.updateRecipe).toHaveBeenCalled();
+      expect(component.recipe).toEqual(updatedRecipe);
+      expect(component.newRecipeMode).toEqual(false);
+expect(spyRecipeService.getRecipe).toHaveBeenCalledWith()
+    });
+    it('failure case: should throw error', async () => {
+      const expectedRecipe = RECIPES[0];
+      await activatedRoute.setParamMap({id: expectedRecipe.id});
+      expect(component.recipe).toEqual(expectedRecipe);
+      expect(component.newRecipeMode).toEqual(false);
+      component.recipe.category = 'test update';
+const updatedRecipe = component.recipe;
+      await component.updateRecipe();
+      expect(spyRecipeService.updateRecipe).toHaveBeenCalled();
+      expect(component.recipe).toEqual(updatedRecipe);
+      expect(component.newRecipeMode).toEqual(false);
+
+
     });
   });
 });

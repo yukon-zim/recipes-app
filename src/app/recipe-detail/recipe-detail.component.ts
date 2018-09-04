@@ -3,7 +3,7 @@ import { Recipe } from '../recipe';
 import { RecipeService } from '../recipe.service';
 import { ErrorService } from '../error.service';
 
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, CanDeactivate, Router} from '@angular/router';
 import {NgForm} from '@angular/forms';
 
 @Component({
@@ -11,7 +11,7 @@ import {NgForm} from '@angular/forms';
   templateUrl: './recipe-detail.component.html',
   styleUrls: ['./recipe-detail.component.css']
 })
-export class RecipeDetailComponent implements OnInit {
+export class RecipeDetailComponent implements OnInit, CanDeactivate<RecipeDetailComponent> {
   @Input() recipe: Recipe;
   @ViewChild('recipeForm') recipeForm: NgForm;
   fieldInEditMode: {fieldName: string, fieldIndex: number};
