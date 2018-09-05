@@ -11,7 +11,7 @@ import {NgForm} from '@angular/forms';
   templateUrl: './recipe-detail.component.html',
   styleUrls: ['./recipe-detail.component.css']
 })
-export class RecipeDetailComponent implements OnInit, CanDeactivate<RecipeDetailComponent> {
+export class RecipeDetailComponent implements OnInit {
   @Input() recipe: Recipe;
   @ViewChild('recipeForm') recipeForm: NgForm;
   fieldInEditMode: {fieldName: string, fieldIndex: number};
@@ -162,8 +162,7 @@ export class RecipeDetailComponent implements OnInit, CanDeactivate<RecipeDetail
     private route: ActivatedRoute,
     private recipeService: RecipeService,
     private errorService: ErrorService,
-    private router: Router,
-    private renderer2: Renderer2
+    private router: Router
   ) { }
 
   ngOnInit(): void {

@@ -2,10 +2,10 @@ import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/t
 
 import { RecipeListComponent } from './recipe-list.component';
 import {RouterTestingModule} from '@angular/router/testing';
-import {RECIPES} from "../../testing/fixtures/recipe-fixtures";
-import {RecipeService} from "../recipe.service";
-import {ErrorService} from "../error.service";
-import {defer} from "rxjs/observable/defer";
+import {recipeFixtures} from '../../testing/fixtures/recipe-fixtures';
+import {RecipeService} from '../recipe.service';
+import {ErrorService} from '../error.service';
+import {defer} from 'rxjs/observable/defer';
 
 describe('RecipeListComponent', () => {
   let component: RecipeListComponent;
@@ -19,9 +19,9 @@ describe('RecipeListComponent', () => {
       'getRecipes',
       'importRecipe',
       'searchRecipes'
-      // 'getRecipes': Promise.resolve(RECIPES),
+      // 'getRecipes': Promise.resolve(recipeFixtures()),
       // 'importRecipe': Promise.resolve(),
-      // 'searchRecipes': Promise.resolve([RECIPES[0]])
+      // 'searchRecipes': Promise.resolve([recipeFixtures()[0]])
     ]);
     TestBed.configureTestingModule({
       declarations: [ RecipeListComponent ],
@@ -44,42 +44,42 @@ describe('RecipeListComponent', () => {
     expect(component).toBeTruthy();
   });
   it('should load recipes on startup', fakeAsync(() => {
-    spyRecipeService.getRecipes.and.returnValue(Promise.resolve(RECIPES));
+    spyRecipeService.getRecipes.and.returnValue(Promise.resolve(recipeFixtures()));
     component.ngOnInit();
     tick(300);
     expect(spyRecipeService.getRecipes).toHaveBeenCalledWith();
-    expect(component.recipes).toEqual(RECIPES);
+    expect(component.recipes).toEqual(recipeFixtures());
   }));
   it('sortByColumnHeader should work correctly', fakeAsync(() => {
-    spyRecipeService.getRecipes.and.returnValue(Promise.resolve(RECIPES));
+    spyRecipeService.getRecipes.and.returnValue(Promise.resolve(recipeFixtures()));
     component.ngOnInit();
     tick(300);
-    expect(component.recipes).toEqual(RECIPES);
+    expect(component.recipes).toEqual(recipeFixtures());
     expect(component.currentSortByField).toEqual(undefined);
     expect(component.currentSortByOrder).toEqual(undefined);
-    expect(component.recipes).toEqual(RECIPES);
+    expect(component.recipes).toEqual(recipeFixtures());
     component.sortByColumnHeader('category');
     expect(component.currentSortByField).toEqual('category');
     expect(component.currentSortByOrder).toEqual('asc');
-    expect(component.recipes).toEqual(RECIPES);
+    expect(component.recipes).toEqual(recipeFixtures());
     component.sortByColumnHeader('category');
     expect(component.currentSortByField).toEqual('category');
     expect(component.currentSortByOrder).toEqual('desc');
-    expect(component.recipes).toEqual(RECIPES.slice(0).reverse());
+    expect(component.recipes).toEqual(recipeFixtures().slice(0).reverse());
     component.sortByColumnHeader('category');
     expect(component.currentSortByField).toEqual('category');
     expect(component.currentSortByOrder).toEqual('asc');
-    expect(component.recipes).toEqual(RECIPES);
+    expect(component.recipes).toEqual(recipeFixtures());
     component.sortByColumnHeader('name');
     expect(component.currentSortByField).toEqual('name');
     expect(component.currentSortByOrder).toEqual('asc');
-    expect(component.recipes).toEqual(RECIPES);
+    expect(component.recipes).toEqual(recipeFixtures());
   }));
   describe('search function', () => {
     it('searchInProgress should update correctly when changing search terms', fakeAsync( () => {
-      spyRecipeService.getRecipes.and.returnValue(Promise.resolve(RECIPES));
+      spyRecipeService.getRecipes.and.returnValue(Promise.resolve(recipeFixtures()));
       spyRecipeService.searchRecipes.and.returnValue(defer(() => {
-        return Promise.resolve([RECIPES[0]]);
+        return Promise.resolve([recipeFixtures()[0]]);
       }));
       component.ngOnInit();
       tick(301);
@@ -101,9 +101,9 @@ describe('RecipeListComponent', () => {
       expect(component.searchInProgress).toBe(false);
     }));
     it('should update component.recipes based on data returned from service', fakeAsync(() => {
-      spyRecipeService.getRecipes.and.returnValue(Promise.resolve(RECIPES));
+      spyRecipeService.getRecipes.and.returnValue(Promise.resolve(recipeFixtures()));
       spyRecipeService.searchRecipes.and.returnValue(defer(() => {
-        return Promise.resolve([RECIPES[0]]);
+        return Promise.resolve([recipeFixtures()[0]]);
       }));
       const searchTerm = 'test';
       component.ngOnInit();
